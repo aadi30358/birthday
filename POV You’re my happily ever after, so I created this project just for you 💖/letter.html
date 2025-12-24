@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Love Letter 💌</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sacramento&family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src='https://cdn.jsdelivr.net/npm/canvas-confetti@1/dist/confetti.browser.min.js'></script>
+
+    <link rel="stylesheet" href="common.css">
+    <style>
+        /* --- Page Specific Styles --- */
+        body {
+            /* Center the letter container */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem 1rem;
+            /* Add padding for small screens */
+        }
+
+        /* --- 2. Floating Petals Background --- */
+        #petals-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .petal {
+            position: absolute;
+            top: -50px;
+            /* Start from top */
+            font-size: 1.5rem;
+            color: var(--secondary-love);
+            opacity: 0;
+            animation: floatPetal 15s linear infinite;
+        }
+
+        /* Simpler heart icon for petals */
+        .petal i {
+            animation: spinPetal 5s linear infinite;
+        }
+
+        @keyframes floatPetal {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0.7;
+            }
+
+            100% {
+                /* Fall down and move sideways */
+                transform: translateY(110vh) translateX(10vw) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes spinPetal {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* --- 3. Back Button (Consistent) --- */
+
+
+        /* --- 4. Main Letter Content --- */
+        #letter-container {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            width: 100%;
+            margin: 2rem 0;
+            /* Animation: Letter unfolds */
+            opacity: 0;
+            transform: perspective(1000px) rotateX(-20deg) translateY(50px);
+            animation: unfoldLetter 1.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes unfoldLetter {
+            to {
+                opacity: 1;
+                transform: perspective(1000px) rotateX(0deg) translateY(0);
+            }
+        }
+
+        .letter-paper {
+            background: var(--paper-bg);
+            color: var(--paper-text);
+            border-radius: 10px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            padding: 4rem 5rem;
+            position: relative;
+            border: 1px solid var(--secondary-love);
+        }
+
+        /* The wax seal */
+        .seal {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: var(--primary-love);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            border: 3px solid var(--paper-bg);
+        }
+
+        /* --- 5. Letter Text Styling --- */
+        .letter-paper h2 {
+            font-family: var(--font-body);
+            font-size: 2.8em;
+            color: var(--primary-love);
+            text-align: center;
+            margin-bottom: 2.5rem;
+            font-weight: 700;
+        }
+
+        /* The main letter body text */
+        .letter-body {
+            font-family: var(--font-heading);
+            font-size: 2.6em;
+            /* Sacramento font needs to be large */
+            line-height: 2.2;
+            text-align: left;
+            color: var(--paper-text);
+        }
+
+        /* The signature */
+        .signature {
+            font-family: var(--font-heading);
+            font-size: 3em;
+            text-align: right;
+            margin-top: 2rem;
+            color: var(--primary-love);
+            font-weight: 700;
+        }
+
+        /* --- 6. Confetti Button --- */
+        .button-container {
+            text-align: center;
+            margin-top: 2rem;
+            /* Fade in after letter */
+            opacity: 0;
+            animation: fadeInButton 1s 2s forwards;
+        }
+
+        @keyframes fadeInButton {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .confetti-button {
+            background: linear-gradient(45deg, var(--primary-love), var(--secondary-love));
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 700;
+            font-family: var(--font-body);
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(230, 0, 122, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .confetti-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(230, 0, 122, 0.6);
+        }
+
+        /* --- 7. Responsive Design --- */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 4rem 1rem;
+            }
+
+            .back-link {
+                top: 10px;
+                left: 10px;
+                padding: 0.5rem 1rem;
+                font-size: 0.9em;
+            }
+
+            .letter-paper {
+                padding: 4rem 2rem 2rem 2rem;
+                /* Less padding on sides */
+            }
+
+            .letter-paper h2 {
+                font-size: 2em;
+            }
+
+            .letter-body {
+                font-size: 2em;
+                /* Slightly smaller on mobile */
+                line-height: 2;
+            }
+
+            .signature {
+                font-size: 2.2em;
+            }
+
+            .confetti-button {
+                font-size: 1em;
+                padding: 0.8rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="petals-container"></div>
+
+    <a href="index.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> Back
+    </a>
+
+    <main id="letter-container">
+        <div class="letter-paper">
+
+            <div class="seal"><i class="fa-solid fa-heart"></i></div>
+
+            <h2>Just a few words, but all from the heart.✨</h2>
+
+            <p class="letter-body">
+                My Dearest Frnd,
+                <br><br>
+                Today feels special, not just because it’s your birthday, but because it celebrates you. I’ve been
+                thinking about what to say, and I realized that some feelings don’t need perfection, they just need
+                honesty.
+                <br><br>
+                There’s something about you that makes everything feel a little softer and brighter. Your smile, your
+                presence, the way you carry yourself, it stays with me longer than I expect. You have this quiet magic
+                that turns ordinary moments into something meaningful, and I truly admire that about you.
+                <br><br>
+                On your birthday, I just want you to know how special you are. You deserve happiness that feels natural,
+                love that feels gentle, and dreams that come true one by one. I hope this year brings you peace,
+                confidence, laughter, and moments that make your heart feel full.
+                <br><br>
+                I’m really grateful that you exist, and even more grateful that I get to wish you today. If this letter
+                makes you smile even a little, then it has done exactly what I hoped it would.
+                <br><br>
+                Take care of yourself. And don’t forget, someone out there thinks of you a little more than you realize.
+                <br><br>
+                I hope you have a great birthday!
+                <br><br>
+                Advance Many More Happy Returns Of the Day And Happiest Birthday To You!
+                <br><br>
+                Take care of yourself, always.
+            </p>
+
+            <p class="signature">
+                Adithya,<br>
+
+            </p>
+        </div>
+
+        <div class="button-container">
+            <button class="confetti-button" onclick="triggerConfetti()">
+                <i class="fa-solid fa-gift"></i> Send a Shower of Love!
+            </button>
+        </div>
+    </main>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // --- 1. Floating Petals Logic ---
+            const petalsContainer = document.getElementById('petals-container');
+
+            function createPetal() {
+                if (petalsContainer) {
+                    const petal = document.createElement('div');
+                    petal.classList.add('petal');
+
+                    petal.innerHTML = '<i class="fa-solid fa-heart"></i>';
+
+                    petal.style.left = Math.random() * 100 + 'vw';
+                    // Stagger horizontal movement
+                    petal.style.animationDuration = (Math.random() * 8 + 10) + 's'; // 10-18 seconds
+                    petal.style.opacity = Math.random() * 0.4 + 0.3; // 0.3-0.7
+                    // Stagger start time
+                    petal.style.animationDelay = Math.random() * 5 + 's';
+
+                    petalsContainer.appendChild(petal);
+
+                    // Remove petal after animation
+                    setTimeout(() => {
+                        petal.remove();
+                    }, 18000); // 18 seconds
+                }
+            }
+
+            // Create a new petal every 700ms
+            setInterval(createPetal, 700);
+        });
+
+        // --- 2. Confetti Effect ---
+        function triggerConfetti() {
+            if (typeof confetti !== 'undefined') {
+                confetti({
+                    particleCount: 200,
+                    spread: 120,
+                    origin: { y: 0.6 },
+                    colors: ['#E6007A', '#FFD700', '#FFFFFF', '#FF85C0']
+                });
+            }
+        }
+    </script>
+    <script src="magic.js"></script>
+
+</body>
+
+</html>

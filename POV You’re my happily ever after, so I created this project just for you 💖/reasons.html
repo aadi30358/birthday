@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why I Love You 💖</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sacramento&family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" href="common.css">
+    <style>
+        /* --- Page Specific Styles --- */
+
+        /* --- 4. Main Reasons Content --- */
+        #reasons-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem 2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #reasons-container h1 {
+            font-family: var(--font-heading);
+            font-size: 4.5em;
+            color: var(--accent-gold);
+            font-weight: 400;
+            text-shadow: 0 0 15px var(--accent-gold);
+            opacity: 0;
+            animation: fadeInDown 1s 0.5s forwards;
+        }
+
+        #reasons-container p {
+            font-family: var(--font-sans);
+            font-size: 1.2em;
+            margin: 0.5rem 0 2rem 0;
+            color: var(--text-light);
+            font-weight: 300;
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: fadeInDown 1s 0.8s forwards;
+        }
+
+        /* --- 5. "Card Stack" Carousel --- */
+        .card-stack {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            /* Width of the cards */
+            height: 350px;
+            /* Height of the cards */
+            margin: 1rem auto;
+            perspective: 1200px;
+            opacity: 0;
+            animation: fadeInUp 1s 1.2s forwards;
+        }
+
+        .reason-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--paper-bg);
+            color: var(--paper-text);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 4px solid var(--accent-gold);
+
+            /* Center text */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+
+            /* Animation */
+            transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1),
+                opacity 0.6s ease;
+
+            /* Hide all cards by default */
+            opacity: 0;
+            transform: translateY(30px) scale(0.9);
+            z-index: 1;
+        }
+
+        .reason-card h2 {
+            font-family: var(--font-heading);
+            font-size: 3em;
+            line-height: 1.5;
+            color: var(--primary-love);
+            font-weight: 700;
+        }
+
+        .reason-card i {
+            font-size: 2rem;
+            color: var(--secondary-love);
+            margin-top: 1.5rem;
+            opacity: 0.7;
+        }
+
+        /* Card States controlled by JS */
+        .reason-card.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            z-index: 10;
+        }
+
+        /* Card behind the active one */
+        .reason-card.next {
+            opacity: 0.5;
+            transform: translateY(25px) scale(0.95);
+            z-index: 9;
+        }
+
+        /* Card that just left */
+        .reason-card.prev {
+            opacity: 0;
+            transform: translateX(-150%) rotate(-20deg) scale(0.9);
+            z-index: 8;
+        }
+
+        /* --- 6. Navigation Buttons --- */
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            z-index: 20;
+            /* Ensure they are above cards */
+            opacity: 0;
+            animation: fadeInUp 1s 1.5s forwards;
+        }
+
+        .nav-buttons button {
+            background: linear-gradient(145deg, var(--primary-love), #a00055);
+            color: white;
+            border: 2px solid var(--secondary-love);
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 1.1em;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-buttons button:hover {
+            transform: translateY(-5px) scale(1.05);
+            background: linear-gradient(145deg, var(--secondary-love), var(--primary-love));
+            box-shadow: 0 8px 25px var(--primary-love);
+        }
+
+        .nav-buttons button:disabled {
+            background: grey;
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            border-color: grey;
+        }
+
+        .nav-buttons button i {
+            margin: 0 0.5rem;
+        }
+
+        /* --- 7. Animations (Consistent) --- */
+        @keyframes fadeInDown {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+        }
+
+        /* --- 8. Responsive Design --- */
+        @media screen and (max-width: 768px) {
+            #reasons-container {
+                padding: 6rem 1rem 3rem 1rem;
+            }
+
+            #reasons-container h1 {
+                font-size: 3.2em;
+            }
+
+            #reasons-container p {
+                font-size: 1em;
+            }
+
+            .card-stack {
+                height: 320px;
+                /* Make cards a bit smaller */
+            }
+
+            .reason-card h2 {
+                font-size: 2.2em;
+            }
+
+            .nav-buttons button {
+                font-size: 1em;
+                padding: 0.7rem 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="hearts-container"></div>
+
+    <a href="index.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> Back
+    </a>
+
+    <main id="reasons-container">
+        <h1>Why you’re special to me, and why today matters even more. Happy Birthday 🤍</h1>
+        <p>Just a few of the countless reasons...</p>
+
+        <div class="card-stack">
+            <div class="reason-card">
+                <h2>I like your smile, it can change the mood of a whole day.</h2>
+                <i class="fa-solid fa-face-smile-beam"></i>
+            </div>
+            <div class="reason-card">
+                <h2>Some people just make things feel lighter. You’re one of them.</h2>
+                <i class="fa-solid fa-feather"></i>
+            </div>
+            <div class="reason-card">
+                <h2>You’re someone I’m glad to have in my life.</h2>
+                <i class="fa-solid fa-heart"></i>
+            </div>
+            <div class="reason-card">
+                <h2>If friendship had a sense of humor, it would look like you.</h2>
+                <i class="fa-solid fa-face-laugh-wink"></i>
+            </div>
+            <div class="reason-card">
+                <h2>Your kindness and compassion towards everyone.</h2>
+                <i class="fa-solid fa-hand-holding-heart"></i>
+            </div>
+            <div class="reason-card">
+                <h2>Our endless supply of inside jokes.</h2>
+                <i class="fa-solid fa-face-laugh-squint"></i>
+            </div>
+            <div class="reason-card">
+                <h2>You inspire me to be better, effortlessly.</h2>
+                <i class="fa-solid fa-arrow-trend-up"></i>
+            </div>
+            <div class="reason-card">
+                <h2>The energy you pour into everything you do.</h2>
+                <i class="fa-solid fa-fire"></i>
+            </div>
+            <div class="reason-card">
+                <h2>Because you are perfectly, wonderfully YOU.</h2>
+                <i class="fa-solid fa-heart"></i>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button id="prev-btn"><i class="fa-solid fa-arrow-left"></i> Prev</button>
+            <button id="next-btn">Next <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+    </main>
+
+    <script src="magic.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+
+            // --- 2. Card Stack Carousel Logic ---
+            const cards = document.querySelectorAll('.reason-card');
+            const nextBtn = document.getElementById('next-btn');
+            const prevBtn = document.getElementById('prev-btn');
+            let currentCardIndex = 0;
+            const totalCards = cards.length;
+
+            function updateCards() {
+                cards.forEach((card, index) => {
+                    // Remove all state classes
+                    card.classList.remove('active', 'prev', 'next');
+
+                    if (index === currentCardIndex) {
+                        card.classList.add('active');
+                    } else if (index === currentCardIndex + 1 || (currentCardIndex === totalCards - 1 && index === 0)) {
+                        // Show next card slightly visible
+                        card.classList.add('next');
+                    } else if (index === currentCardIndex - 1 || (currentCardIndex === 0 && index === totalCards - 1)) {
+                        // This card just moved away
+                        card.classList.add('prev');
+                    }
+                });
+
+                // Optional: Disable/Enable buttons at start/end
+                // prevBtn.disabled = (currentCardIndex === 0);
+                // nextBtn.disabled = (currentCardIndex === totalCards - 1);
+            }
+
+            // Next Button
+            nextBtn.addEventListener('click', () => {
+                currentCardIndex++;
+                if (currentCardIndex >= totalCards) {
+                    currentCardIndex = 0; // Loop back to start
+                }
+                updateCards();
+            });
+
+            // Previous Button
+            prevBtn.addEventListener('click', () => {
+                currentCardIndex--;
+                if (currentCardIndex < 0) {
+                    currentCardIndex = totalCards - 1; // Loop to end
+                }
+                updateCards();
+            });
+
+            // Initial setup
+            updateCards();
+
+        });
+    </script>
+
+</body>
+
+</html>

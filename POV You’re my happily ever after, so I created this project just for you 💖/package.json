@@ -1,0 +1,14 @@
+{
+  "name": "birthday-project-surprise",
+  "version": "1.0.0",
+  "description": "A special birthday project created with love.",
+  "scripts": {
+    "dev": "serve .",
+    "start": "serve ."
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}

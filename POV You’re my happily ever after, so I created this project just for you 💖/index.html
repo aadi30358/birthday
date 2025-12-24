@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌟 A Surprise For My Bestie ✨</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sacramento&family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src='https://cdn.jsdelivr.net/npm/canvas-confetti@1/dist/confetti.browser.min.js'></script>
+
+    <link rel="stylesheet" href="common.css">
+    <style>
+        /* --- Page Specific Styles --- */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Loading Screen --- */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--background-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease-out;
+        }
+
+        .spinner-heart {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            background-color: var(--primary-love);
+            transform: rotate(-45deg);
+            animation: pulseHeart 1.5s infinite ease-in-out;
+            border-radius: 10px;
+        }
+
+        .spinner-heart::before,
+        .spinner-heart::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-color: var(--primary-love);
+            border-radius: 50%;
+        }
+
+        .spinner-heart::before {
+            top: -40px;
+            left: 0;
+        }
+
+        .spinner-heart::after {
+            left: 40px;
+            top: 0;
+        }
+
+        .loading-text {
+            margin-top: 30px;
+            font-family: var(--font-heading);
+            font-size: 2.5em;
+            color: var(--text-light);
+            animation: fadeInOut 2s infinite alternate;
+        }
+
+        @keyframes pulseHeart {
+            0% {
+                transform: rotate(-45deg) scale(0.9);
+                box-shadow: 0 0 15px var(--secondary-love);
+            }
+
+            50% {
+                transform: rotate(-45deg) scale(1.1);
+                box-shadow: 0 0 30px var(--primary-love), 0 0 40px var(--secondary-love);
+            }
+
+            100% {
+                transform: rotate(-45deg) scale(0.9);
+                box-shadow: 0 0 15px var(--secondary-love);
+            }
+        }
+
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0.6;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* --- Main Content --- */
+        #main-content {
+            display: none;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 3rem 4rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 1.5s ease, transform 1.5s ease;
+        }
+
+        #main-content.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        #main-content h1 {
+            font-family: var(--font-heading);
+            font-size: 5em;
+            color: var(--accent-gold);
+            font-weight: 400;
+            text-shadow: 0 0 15px var(--accent-gold);
+            min-height: 1.2em;
+            /* Prevent layout shift during typing */
+        }
+
+        #main-content p {
+            font-family: var(--font-sans);
+            font-size: 1.2em;
+            margin: 1rem 0 2.5rem 0;
+            color: var(--text-light);
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        /* --- Navigation Links --- */
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-button {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--text-light);
+            background: linear-gradient(145deg, var(--primary-love), #a00055);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 1.1em;
+            border: 2px solid var(--secondary-love);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button i {
+            margin-right: 0.75rem;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            background: linear-gradient(145deg, var(--secondary-love), var(--primary-love));
+            box-shadow: 0 8px 25px var(--primary-love);
+            color: white;
+            border-color: var(--accent-gold);
+        }
+
+        /* --- Popup & Confetti --- */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+            backdrop-filter: blur(5px);
+        }
+
+        .popup.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .popup-content {
+            background: linear-gradient(135deg, #2A013A, #4F016B);
+            padding: 2.5rem 3rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: var(--text-light);
+            border: 2px solid var(--secondary-love);
+        }
+
+        .popup.active .popup-content {
+            transform: scale(1);
+        }
+
+        .popup-content h2 {
+            font-family: var(--font-heading);
+            font-size: 3.5em;
+            color: var(--accent-gold);
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        .popup-content p {
+            font-family: var(--font-sans);
+            font-size: 1.1em;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2.5em;
+            color: var(--secondary-love);
+            cursor: pointer;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .close-button:hover {
+            color: var(--accent-gold);
+            transform: rotate(90deg);
+        }
+
+        #wish-animation-area {
+            position: relative;
+            width: 100%;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            border: 1px dashed var(--secondary-love);
+        }
+
+        .shimmer-star {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0;
+            box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.7);
+            animation: shimmerAndFade 3s ease-out infinite;
+        }
+
+        @keyframes shimmerAndFade {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            30% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+        }
+
+        .confetti-button {
+            background: linear-gradient(45deg, var(--accent-gold), #ffc400);
+            color: var(--background-dark);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 700;
+            font-family: var(--font-sans);
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .confetti-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.6);
+        }
+
+        #footer-text {
+            position: fixed;
+            bottom: 15px;
+            right: 20px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9em;
+            font-family: var(--font-sans);
+            z-index: 3;
+            font-weight: 300;
+        }
+
+        /* --- Birthday Cake Popup --- */
+        /* --- Krishna Image --- */
+        .krishna-img {
+            width: 180px;
+            height: auto;
+            border-radius: 50%;
+            border: 4px solid var(--accent-gold);
+            box-shadow: 0 0 25px var(--peacock-blue), 0 0 10px var(--primary-love);
+            margin-bottom: 25px;
+            animation: floatImage 4s ease-in-out infinite;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px;
+        }
+
+        @keyframes floatImage {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-10px) rotate(2deg);
+            }
+        }
+
+        /* --- Birthday Cake Popup --- */
+        #birthday-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        #birthday-popup.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .cake-container {
+            position: relative;
+            margin-top: 30px;
+            transform: scale(0.9);
+        }
+
+        .cake {
+            position: relative;
+            width: 250px;
+            height: 200px;
+        }
+
+        .plate {
+            width: 270px;
+            height: 110px;
+            position: absolute;
+            bottom: -10px;
+            left: -10px;
+            background-color: #ccc;
+            border-radius: 50%;
+            box-shadow: 0 2px 0 #b3b3b3, 0 4px 0 #b3b3b3, 0 5px 40px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to right, #e0e0e0, #ffffff, #e0e0e0);
+        }
+
+        .layer {
+            position: absolute;
+            display: block;
+            width: 250px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: var(--peacock-blue);
+            /* Krishna Blue Body */
+            box-shadow: 0 2px 0px #003c70, 0 4px 0px #002a4d, 0 6px 0px #002a4d, 0 8px 0px #002a4d, 0 10px 0px #002a4d, 0 12px 0px #002a4d, 0 14px 0px #002a4d, 0 16px 0px #002a4d, 0 18px 0px #002a4d, 0 20px 0px #002a4d, 0 22px 0px #002a4d, 0 24px 0px #002a4d, 0 26px 0px #002a4d, 0 28px 0px #002a4d, 0 30px 0px #002a4d;
+        }
+
+        .layer-top {
+            top: 0px;
+        }
+
+        .layer-middle {
+            top: 33px;
+        }
+
+        .layer-bottom {
+            top: 66px;
+        }
+
+        .icing {
+            top: 2px;
+            left: 5px;
+            background-color: var(--peacock-teal);
+            /* Peacock Teal Icing */
+            width: 240px;
+            height: 90px;
+            border-radius: 50%;
+            position: absolute;
+            z-index: 10;
+            box-shadow: inset 0 -5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .drip {
+            display: block;
+            width: 50px;
+            height: 60px;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            background-color: var(--peacock-teal);
+            position: absolute;
+            top: 55px;
+            /* aligned with icing bottom approx */
+            z-index: 11;
+        }
+
+        .drip1 {
+            left: 10px;
+            height: 40px;
+            transform: skewY(10deg);
+        }
+
+        .drip2 {
+            left: 60px;
+            height: 30px;
+            transform: skewY(-10deg);
+        }
+
+        .drip3 {
+            left: 120px;
+            height: 50px;
+            transform: skewY(5deg);
+        }
+
+        .drip4 {
+            left: 170px;
+            height: 35px;
+            transform: skewY(-5deg);
+        }
+
+        .candle {
+            background-color: var(--accent-gold);
+            width: 16px;
+            height: 50px;
+            border-radius: 8px / 4px;
+            top: -20px;
+            left: 50%;
+            margin-left: -8px;
+            z-index: 20;
+            position: absolute;
+            box-shadow: 0 0 15px var(--accent-gold);
+            background: linear-gradient(to right, #ffd700, #ffec8b, #ffd700);
+        }
+
+        .candle:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 16px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ad030f;
+        }
+
+        .flame {
+            position: absolute;
+            background-color: orange;
+            width: 15px;
+            height: 35px;
+            border-radius: 10px 10px 10px 10px / 25px 25px 10px 10px;
+            top: -34px;
+            left: 50%;
+            margin-left: -7.5px;
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(255, 165, 0, 0.5), 0 0 20px rgba(255, 165, 0, 0.5), 0 0 60px rgba(255, 165, 0, 0.5), 0 0 80px rgba(255, 165, 0, 0.5);
+            transform-origin: 50% 90%;
+            animation: flicker 1s ease-in-out alternate infinite;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .flame:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px orange;
+        }
+
+        /* Flame Blow Out Animation */
+        .flame.blown {
+            animation: none;
+            opacity: 0;
+            transform: scale(0.1);
+        }
+
+        .smoke {
+            position: absolute;
+            background-color: #aaa;
+            width: 10px;
+            height: 30px;
+            border-radius: 50%;
+            top: -40px;
+            left: 50%;
+            margin-left: -5px;
+            opacity: 0;
+            z-index: 9;
+        }
+
+        .smoke.active {
+            animation: smokeRise 1.5s forwards;
+        }
+
+        @keyframes flicker {
+            0% {
+                transform: skewX(5deg);
+                box-shadow: 0 0 10px rgba(255, 165, 0, 0.2), 0 0 20px rgba(255, 165, 0, 0.2);
+            }
+
+            25% {
+                transform: skewX(-5deg);
+                box-shadow: 0 0 10px rgba(255, 165, 0, 0.5), 0 0 20px rgba(255, 165, 0, 0.5);
+            }
+
+            50% {
+                transform: skewX(10deg);
+                box-shadow: 0 0 10px rgba(255, 165, 0, 0.3), 0 0 20px rgba(255, 165, 0, 0.3);
+            }
+
+            75% {
+                transform: skewX(-10deg);
+                box-shadow: 0 0 10px rgba(255, 165, 0, 0.4), 0 0 20px rgba(255, 165, 0, 0.4);
+            }
+
+            100% {
+                transform: skewX(5deg);
+                box-shadow: 0 0 10px rgba(255, 165, 0, 0.5), 0 0 20px rgba(255, 165, 0, 0.5);
+            }
+        }
+
+        @keyframes smokeRise {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0.5);
+            }
+
+            20% {
+                opacity: 0.8;
+                transform: translateY(-10px) scale(0.8);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-40px) scale(1.5);
+            }
+        }
+
+        .instruction-text {
+            color: var(--accent-gold);
+            font-family: var(--font-heading);
+            font-size: 2.5em;
+            margin-top: 3rem;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+            text-align: center;
+        }
+
+        @media screen and (max-width: 768px) {
+            #main-content {
+                padding: 2rem 1.5rem;
+                width: 90%;
+            }
+
+            #main-content h1 {
+                font-size: 3.5em;
+            }
+
+            #main-content p {
+                font-size: 1em;
+                margin-bottom: 2rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .popup-content {
+                width: 90%;
+                padding: 2rem 1.5rem;
+            }
+
+            .popup-content h2 {
+                font-size: 2.8em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="hearts-container"></div>
+
+    <div id="loading-screen">
+        <div class="spinner-heart"></div>
+        <p class="loading-text">Unveiling your surprise...</p>
+    </div>
+
+    <div id="main-content">
+        <img src="profile_pic.png" alt="Special Photo" class="krishna-img">
+        <h1 id="typewriter-text"></h1>
+        <p>I've created this special place, just for you. ✨</p>
+
+        <div class="nav-links">
+            <a href="letter.html" class="nav-button"><i class="fa-solid fa-envelope"></i> My Letter</a>
+            <a href="reasons.html" class="nav-button"><i class="fa-solid fa-star"></i> Why I Like You</a>
+            <button class="nav-button" onclick="triggerBirthdayBlast()"><i class="fa-solid fa-cake-candles"></i>
+                Birthday Blast</button>
+        </div>
+    </div>
+
+    <div id="wish-popup" class="popup">
+        <div class="popup-content">
+            <span class="close-button" onclick="closeWishPopup()">&times;</span>
+            <h2>Make a Wish! ✨</h2>
+            <p>Close your eyes, make a heartfelt wish, and watch the magic shimmer!</p>
+            <div id="wish-animation-area"></div>
+            <button class="confetti-button" onclick="triggerConfettiAndHearts()">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Shower with Magic
+            </button>
+        </div>
+    </div>
+
+    <div id="birthday-popup">
+        <div class="cake-container">
+            <div class="cake">
+                <div class="plate"></div>
+                <div class="layer layer-bottom"></div>
+                <div class="layer layer-middle"></div>
+                <div class="layer layer-top"></div>
+                <div class="icing"></div>
+                <div class="drip drip1"></div>
+                <div class="drip drip2"></div>
+                <div class="drip drip3"></div>
+                <div class="candle">
+                    <div class="flame" id="flame" onclick="blowCandle()"></div>
+                    <div class="smoke" id="smoke"></div>
+                </div>
+            </div>
+        </div>
+        <div class="instruction-text" id="cake-instruction">Make a Wish & Tap the Flame! ✨</div>
+    </div>
+
+    <script src="magic.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // --- 1. Loading Screen Logic ---
+            const loadingScreen = document.getElementById('loading-screen');
+            const mainContent = document.getElementById('main-content');
+
+            setTimeout(() => {
+                if (loadingScreen) {
+                    loadingScreen.style.opacity = '0';
+                }
+                setTimeout(() => {
+                    if (loadingScreen) {
+                        loadingScreen.style.display = 'none';
+                    }
+                    if (mainContent) {
+                        mainContent.style.display = 'block';
+                        // Trigger fade-in animation
+                        setTimeout(() => {
+                            mainContent.classList.add('visible');
+                            startTypewriter(); // Start typing after fade in
+                        }, 50);
+                    }
+                }, 1000); // Wait for fade-out
+            }, 3000); // 3 seconds loading time
+
+            // --- 2. Typewriter Effect ---
+            function startTypewriter() {
+                const text = "My Dearest Frnd,";
+                const element = document.getElementById('typewriter-text');
+                if (!element) return;
+
+                let i = 0;
+                element.innerHTML = ""; // Clear initial
+
+                function type() {
+                    if (i < text.length) {
+                        element.innerHTML += text.charAt(i);
+                        i++;
+                        setTimeout(type, 150); // Typing speed
+                    }
+                }
+                type();
+            }
+
+            // --- 3. "Make a Wish" Popup Logic ---
+            function openPopup(popupId) {
+                const popup = document.getElementById(popupId);
+                if (popup) {
+                    popup.classList.add('active');
+                }
+            }
+
+            function closePopup(popupId) {
+                const popup = document.getElementById(popupId);
+                if (popup) {
+                    popup.classList.remove('active');
+                }
+            }
+
+            // Specific functions for Wish Popup
+            window.openWishPopup = function () { // Expose to window for onclick
+                openPopup('wish-popup');
+                createShimmeringWish();
+            }
+
+            window.closeWishPopup = function () {
+                closePopup('wish-popup');
+            }
+
+            // --- 4. Shimmering Wish Animation ---
+            function createShimmeringWish() {
+                const animationArea = document.getElementById('wish-animation-area');
+                if (!animationArea) return;
+
+                animationArea.innerHTML = ''; // Clear previous wishes
+
+                for (let i = 0; i < 20; i++) {
+                    const star = document.createElement('div');
+                    star.classList.add('shimmer-star');
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.animationDelay = Math.random() * 3 + 's';
+                    star.style.animationDuration = Math.random() * 2 + 3 + 's';
+                    animationArea.appendChild(star);
+                }
+            }
+
+            // --- 5. Confetti Effect ---
+            window.triggerConfettiAndHearts = function () {
+                if (typeof confetti !== 'undefined') {
+                    // Confetti blast
+                    confetti({
+                        particleCount: 150,
+                        spread: 100,
+                        origin: {
+                            y: 0.6
+                        },
+                        colors: ['#E6007A', '#FFD700', '#FFFFFF', '#FF85C0']
+                    });
+
+                    // Re-trigger shimmer animation
+                    createShimmeringWish();
+                }
+            }
+
+            // --- 6. Birthday Blast Sequence ---
+            window.triggerBirthdayBlast = function () {
+                const popup = document.getElementById('birthday-popup');
+                const flame = document.getElementById('flame');
+                const smoke = document.getElementById('smoke');
+                const instruction = document.getElementById('cake-instruction');
+
+                if (popup) {
+                    popup.classList.add('active');
+                    // Reset state
+                    if (flame) {
+                        flame.classList.remove('blown');
+                        flame.style.display = 'block';
+                    }
+                    if (smoke) {
+                        smoke.classList.remove('active');
+                    }
+                    if (instruction) {
+                        instruction.innerText = "Make a Wish & Tap the Flame! ✨";
+                        instruction.style.opacity = 1;
+                    }
+                }
+            }
+
+            window.blowCandle = function () {
+                const flame = document.getElementById('flame');
+                const smoke = document.getElementById('smoke');
+                const instruction = document.getElementById('cake-instruction');
+
+                if (flame && !flame.classList.contains('blown')) {
+                    flame.classList.add('blown');
+                    if (smoke) smoke.classList.add('active');
+
+                    if (instruction) {
+                        instruction.style.opacity = 0; // Fade out instruction
+                        setTimeout(() => {
+                            instruction.innerText = "Happy Birthday Sahithi! 🎉";
+                            instruction.style.opacity = 1;
+                        }, 500);
+                    }
+
+                    // Wait for smoke, then BLAST
+                    setTimeout(() => {
+                        fireConfettiBlast();
+
+                        // Close popup later
+                        setTimeout(() => {
+                            const popup = document.getElementById('birthday-popup');
+                            if (popup) popup.classList.remove('active');
+                        }, 5000);
+                    }, 1000);
+                }
+            }
+
+            function fireConfettiBlast() {
+                if (typeof confetti !== 'undefined') {
+                    // Big explosion using updated theme colors
+                    var duration = 3000;
+                    var animationEnd = Date.now() + duration;
+                    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 3000 };
+                    var themeColors = ['#FFD700', '#004e92', '#009688', '#E6007A', '#FFFFFF'];
+
+                    var random = function (min, max) { return Math.random() * (max - min) + min; }
+
+                    var interval = setInterval(function () {
+                        var timeLeft = animationEnd - Date.now();
+                        if (timeLeft <= 0) {
+                            return clearInterval(interval);
+                        }
+                        var particleCount = 50 * (timeLeft / duration);
+                        confetti(Object.assign({}, defaults, { particleCount, colors: themeColors, origin: { x: random(0.1, 0.3), y: Math.random() - 0.2 } }));
+                        confetti(Object.assign({}, defaults, { particleCount, colors: themeColors, origin: { x: random(0.7, 0.9), y: Math.random() - 0.2 } }));
+                    }, 250);
+
+                    confetti(Object.assign({}, defaults, { particleCount: 200, spread: 160, origin: { y: 0.6 }, colors: themeColors }));
+                }
+            }
+
+            // Close popup when clicking outside cake
+            document.getElementById('birthday-popup').addEventListener('click', function (e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+
+
+        });
+    </script>
+
+</body>
+
+</html>
